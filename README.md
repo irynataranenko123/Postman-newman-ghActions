@@ -4,7 +4,7 @@
 
 ```
 In this project:
-1. Made several integration tests in Postman for the store.collection.json
+1. Created several integration tests in Postman for the store.collection.json
 2. Added Github action to run petstore.collection.json in Github pages
 ```
 ## Technologies
