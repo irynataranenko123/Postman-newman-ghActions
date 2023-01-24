@@ -24,7 +24,7 @@ jobs:
         run: mkdir -p docs
 
       - name: Run POSTMAN collection
-        run: npm run-and-report
+        run: npm run run-and-report
         
       - name: Output the run Details
         uses: actions/upload-artifact@v2
