@@ -13,8 +13,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: "16.x"
-          cache: 'npm'
-          
+      - run: npm i npm@latest
+      - run: npm i
+      
       - name: Install newman
         run: |
           npm install -g newman
