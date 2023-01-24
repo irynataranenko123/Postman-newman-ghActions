@@ -17,31 +17,6 @@ products:
     price: 30
     sku: 999921312423312
     description: awesome
-  - name: Chicken
-    price: 264.61
-    sku: 671
-    description: changed description
-    id: 4
-  - name: Chair
-    price: 534.08
-    sku: 232
-    description: changed description
-    id: 6
-  - name: Chair
-    price: 534.08
-    sku: 232
-    description: changed description
-    id: 6
-  - name: Gloves
-    price: 391.2
-    sku: 123321123
-    description: changed description
-    id: 7
-  - name: Computer
-    price: 276.32
-    sku: 123321123
-    description: changed description
-    id: 8
 orders:
   - id: 1
     name: order1
@@ -49,12 +24,9 @@ orders:
   - id: 2
     name: order2
     sku: 999921312423
-  - name: order5
-    sku: 123425445656765
-    id: 3
-  - name: order5
-    sku: 123425445656765
-    id: 4
+  - id: 3
+    name: order2
+    sku: 999921312423312
 users:
   - id: 1
     firstName: Alice
@@ -137,21 +109,3 @@ users:
     signUpDate: 2019-08-24
     status: active
     level: consumer
-  - firstName: Sam
-    lastName: Smith
-    email: Naomi_Braun18@gmail.com
-    dateOfBirth: 2001-10-99
-    emailVerified: true
-    signUpDate: 2019-08-24
-    status: active
-    level: lord
-    id: 10
-  - firstName: Graciela
-    lastName: Smith
-    email: Lilly.Franecki@yahoo.com
-    dateOfBirth: 2001-10-99
-    emailVerified: true
-    signUpDate: 2019-08-24
-    status: active
-    level: lord
-    id: 11
