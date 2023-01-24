@@ -25,7 +25,7 @@ $ npm run test-and-report
 ```
 To run tests in Postman:
 1. Run npm run tern-on-api in comand line
-2. Open Postman application or Postman <a href="https://web.postman.co" /> web Postman </a>
+2. Open Postman application or <a href="https://web.postman.co" /> web Postman </a>
 2. Import store.collection.json 
 3. Click the button "Runner"
 4. Drag the folder "store" into the "Run order" field
