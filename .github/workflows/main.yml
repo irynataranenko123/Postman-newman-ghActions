@@ -1,0 +1,33 @@
+name: Test-Build
+on:
+  push:
+    branches:
+      - main
+jobs:
+  test-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install Node
+        uses: actions/setup-node@v1
+        with:
+          node-version: "16.x"
+          cache: 'npm'
+          
+      - name: Install newman
+        run: |
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
+          
+      - name: Make Directory for results
+        run: mkdir -p docs
+
+      - name: Run POSTMAN collection
+        run: npm run-and-report
+        
+      - name: Output the run Details
+        uses: actions/upload-artifact@v2
+        with:
+          name: RunReports
+          path: docs
