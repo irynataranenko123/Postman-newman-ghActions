@@ -19,11 +19,20 @@ $ git clone https://github.com/PepesSpi123/Postman-newman-ghActions
 $ npm install
 ```
 ## Running test:
-To run tests and create a report: 
+To run tests in command line and create a report: 
 ```
 $ npm run test-and-report
 ```
-## Reports:
+To run tests in Postman:
+```
+1. Run npm run tern-on-api in comand line
+2. Open Postman application or Postman <a href="https://web.postman.co" /> web Postman </a>
+2. Import store.collection.json 
+3. Click the button "Runner"
+4. Drag the folder "store" into the "Run order" field
+5. Press the button "Run store" 
+```
+## Report:
 ``` 
 When you use 'npm run test-and-report' the report is saved in the docs folder as an html file
 ```
