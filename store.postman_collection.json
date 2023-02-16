@@ -1,0 +1,1423 @@
+{
+	"info": {
+		"_postman_id": "124414a0-7916-4d05-b1d8-3fc326bce10a",
+		"name": "store",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23345223"
+	},
+	"item": [
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Create product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"pm.globals.set(\"productId\", response.id);",
+									"pm.globals.set(\"productName\", response.name);",
+									"",
+									"pm.test(\"Successful POST request\", () => {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);",
+									"});",
+									"",
+									"pm.test(\"Status code is 404\", () => {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Asserting a value type\", () => {",
+									"  pm.expect(response.id).to.be.a(\"number\");",
+									"  pm.expect(response.name).to.be.a(\"string\");",
+									"  pm.expect(response.price).to.be.a(\"number\");",
+									"  pm.expect(response.sku).to.be.a(\"number\");",
+									"  pm.expect(response.description).to.be.a(\"string\");",
+									"});",
+									"",
+									"pm.test(\"Asserting that value type is incorrect\", () => {",
+									"  pm.expect(response.id).to.be.a(\"string\");",
+									"  pm.expect(response.name).to.be.a(\"number\");",
+									"  pm.expect(response.price).to.be.a(\"string\");",
+									"  pm.expect(response.sku).to.be.a(\"string\");",
+									"  pm.expect(response.description).to.be.a(\"number\");",
+									"});",
+									"",
+									"pm.test(\"Status code name has status 'Created'\", () => {",
+									"  pm.response.to.have.status(\"Created\");",
+									"});",
+									"",
+									"pm.test(\"Status code name has not status 'Created'\", () => {",
+									"  pm.response.not.to.have.status(\"Created\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"{{$randomProduct}}\",\r\n    \"price\": 155,\r\n    \"sku\": 123321123,\r\n    \"description\": \"wouh\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List products",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();\r",
+									"pm.globals.set(\"oldName\", response.name);\r",
+									"\r",
+									"pm.test(\"Status code is 200\", () => {\r",
+									"  pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Status code is 404\", () => {\r",
+									"     pm.response.to.have.status(404);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Test value has correct name\", () => {\r",
+									"    pm.expect(response[0].name).to.eql(\"tomato\");\r",
+									"    pm.expect(response[1].name).to.eql(\"lettuce\");\r",
+									"    pm.expect(response[2].name).to.eql(\"apple\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Test value has incorrect name\", () => {\r",
+									"    pm.expect(response[0].name).to.eql(\"cheese\");\r",
+									"    pm.expect(response[1].name).to.eql(\"juice\");\r",
+									"    pm.expect(response[2].name).to.eql(\"orange\");\r",
+									"});\r",
+									"\r",
+									"pm.test(\"All id are correct\", () => {\r",
+									"    let len = response.length\r",
+									"    for (let i = 1; i < len; i++) {\r",
+									"        pm.expect(response[i].id - response[i-1].id).to.be.eql(1); \r",
+									"    }\r",
+									"});\r",
+									"\r",
+									"pm.test(\"All id are unic\", () => {\r",
+									"  let count = 0\r",
+									"  for (let i = 0; i < response.length; i++){\r",
+									"      for (let j = 0; j < response.length; j++){\r",
+									"        if(response[i].id === response[j].id){\r",
+									"              count += 1\r",
+									"        }\r",
+									"      } \r",
+									"  }\r",
+									"  pm.expect(count).to.be.eql(response.length)  \r",
+									"})\r",
+									"\r",
+									"pm.test(\"Id are not unic\", () => {\r",
+									"  let count = 0\r",
+									"  for (let i = 0; i < response.length; i++){\r",
+									"      for (let j = 0; j < response.length; j++){\r",
+									"        if(response[i].id === response[j].id){\r",
+									"              count += 1\r",
+									"        }\r",
+									"      } \r",
+									"  }\r",
+									"  pm.expect(count).not.to.be.eql(response.length)  \r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "{{page}}",
+									"disabled": true
+								},
+								{
+									"key": "pageSize",
+									"value": "{{pageSize}}",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update product",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"pm.globals.set(\"newName\", response.name);",
+									"",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Status code is 404\", () => {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Id and name are correct\", () => {",
+									"  pm.expect(globals.productId).to.be.eql(response.id)",
+									"  pm.expect(globals.productName).to.be.eql(response.name)",
+									"})",
+									"",
+									"pm.test(\"Id and name are incorrect\", () => {",
+									"  pm.expect(globals.productId).not.to.be.eql(response.id)",
+									"  pm.expect(globals.productName).not.to.be.eql(response.name)",
+									"})",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{productId}},\r\n    \"name\": \"{{productName}}\",\r\n    \"price\": {{$randomPrice}},\r\n    \"sku\": 123321123,\r\n    \"description\": \"changed description\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get product by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Status code is 404\", () => {",
+									"      pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Id is correct\", () => {",
+									"  pm.expect(globals.productId).to.be.eql(response.id)",
+									"})",
+									"",
+									"pm.test(\"Id is incorrect\", () => {",
+									"  pm.expect(globals.productId).not.to.be.eql(response.id)",
+									"})",
+									"",
+									"pm.test(\"Ckecking that name was updated\", () => {",
+									"    pm.expect(response.name).not.to.be.eql(globals.oldName)",
+									"    pm.expect(response.name).to.be.eql(globals.newName)",
+									"})",
+									"",
+									"pm.test(\"Ckecking that name was not updated\", () => {",
+									"    pm.expect(response.name).to.be.eql(globals.oldName)",
+									"    pm.expect(response.name).not.to.be.eql(globals.newName)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/:productId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":productId"
+							],
+							"variable": [
+								{
+									"key": "productId",
+									"value": "{{productId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove product by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Status code is 404\", () => {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/:productId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"products",
+								":productId"
+							],
+							"variable": [
+								{
+									"key": "productId",
+									"value": "{{invalidId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Create order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"pm.globals.set(\"orderId\", response.id);",
+									"pm.globals.set(\"orderName\", response.name);",
+									"",
+									"pm.test(\"Successful POST request\", () => {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);",
+									"});",
+									"",
+									"pm.test(\"Status code is 404\", () => {",
+									"   pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Asserting a value type\", () => {",
+									"  pm.expect(response.id).to.be.a(\"number\");",
+									"  pm.expect(response.name).to.be.a(\"string\");",
+									"  pm.expect(response.sku).to.be.a(\"number\");",
+									"});",
+									"",
+									"pm.test(\"Asserting that a value type is incorrect\", () => {",
+									"  pm.expect(response.id).to.be.a(\"string\");",
+									"  pm.expect(response.name).to.be.a(\"numder\");",
+									"  pm.expect(response.sku).to.be.a(\"string\");",
+									"});",
+									"",
+									"pm.test(\"Status code name has status 'Created'\", () => {",
+									"  pm.response.to.have.status(\"Created\");",
+									"});",
+									"",
+									"pm.test(\"Status code name has not status 'Created'\", () => {",
+									"  pm.response.not.to.have.status(\"Created\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"order5\",\r\n    \"sku\": 123425445656765\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List orders",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"pm.globals.set(\"oldNameOrders\", response.name);",
+									"",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Status code is 404\", () => {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Id is unic\", () => {",
+									"  let count = 0",
+									"  for (let i = 0; i < response.length; i++){",
+									"    if(response[i].id === globals.orderId) {",
+									"          count += 1",
+									"    }",
+									"  }",
+									"  pm.expect(count).to.be.eql(1)  ",
+									"});",
+									"",
+									"pm.test(\"Id is not unic\", () => {",
+									"  let count = 0",
+									"  for (let i = 0; i < response.length; i++){",
+									"    if(response[i].id === globals.orderId) {",
+									"          count += 1",
+									"    }",
+									"  }",
+									"  pm.expect(count).not.to.be.eql(1)  ",
+									"});",
+									"",
+									"pm.test(\"Name is unic\", () => {",
+									"  let count = 0",
+									"  for (let i = 0; i < response.length; i++){",
+									"      for (let j = 0; j < response.length; j++){",
+									"        if(response[i].name === response[j].name){",
+									"              count += 1",
+									"        }",
+									"      } ",
+									"  }",
+									"  pm.expect(count).to.be.eql(response.length) ",
+									"}) ",
+									"",
+									"  pm.test(\"Name is not unic\", () => {",
+									"  let count = 0",
+									"  for (let i = 0; i < response.length; i++){",
+									"      for (let j = 0; j < response.length; j++){",
+									"        if(response[i].name === response[j].name){",
+									"              count += 1",
+									"        }",
+									"      } ",
+									"  }",
+									"  pm.expect(count).not.to.be.eql(response.length) ",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders?sortOrder=DESC&sortKey=name",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							],
+							"query": [
+								{
+									"key": "sortOrder",
+									"value": "DESC"
+								},
+								{
+									"key": "sortKey",
+									"value": "name"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"pm.globals.set(\"newNameOrders\", response.name);",
+									"",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Status code is 404\", () => {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Id and name are correct\", () => {",
+									"  pm.expect(globals.orderId).to.be.eql(response.id)",
+									"  pm.expect(globals.orderName).to.be.eql(response.name)",
+									"})",
+									"",
+									"pm.test(\"Id and name are incorrect\", () => {",
+									"  pm.expect(globals.orderId).not.to.be.eql(response.id)",
+									"  pm.expect(globals.orderName).not.to.be.eql(response.name)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\": {{orderId}},\r\n    \"name\": \"{{orderName}}\",\r\n    \"sku\": 123425445656765\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orders",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get order by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 404\", () => {",
+									"  pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Status code is 200\", () => {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									""
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders/:orderId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								":orderId"
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": "{{invalidId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove order by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Status code is 404\", () => {",
+									"  pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Id is correct\", () => {",
+									"  pm.expect(globals.orderId).to.be.eql(response.id)",
+									"})",
+									"",
+									"pm.test(\"Id is incorrect\", () => {",
+									"  pm.expect(globals.orderId).not.to.be.eql(response.id)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders/:orderId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"orders",
+								":orderId"
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": "{{orderId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Create user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"pm.globals.set(\"userFirstName\", response.firstName);",
+									"pm.globals.set(\"userLastName\", response.lastName);",
+									"pm.globals.set(\"userEmail\", response.email);",
+									"pm.globals.set(\"userId\", response.id);",
+									"",
+									"pm.test(\"Successful POST request\", () => {",
+									"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);",
+									"});",
+									"",
+									"pm.test(\"Status code is 404\", () => {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Status code name has status 'Created'\", () => {",
+									"  pm.response.to.have.status(\"Created\");",
+									"});",
+									"",
+									"pm.test(\"Status code name has not status 'Created'\", () => {",
+									"  pm.response.not.to.have.status(\"Created\");",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"{{$randomFirstName}}\",\r\n    \"lastName\": \"{{$randomLastName}}\",\r\n    \"email\": \"{{$randomEmail}}\",\r\n    \"dateOfBirth\": \"2001-10-99\",\r\n    \"emailVerified\": false,\r\n    \"signUpDate\": \"2019-08-24\",\r\n    \"status\": \"active\",\r\n    \"level\": \"lord\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List users",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"pm.globals.set(\"oldNameUsers\", response.firstName);",
+									"",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Status code is 404\", () => {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"const schema = {",
+									"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",",
+									"  \"type\": \"array\",",
+									"  \"items\": [",
+									"    {",
+									"      \"type\": \"object\",",
+									"      \"properties\": {",
+									"        \"id\": {",
+									"          \"type\": \"integer\"",
+									"        },",
+									"        \"firstName\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"lastName\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"email\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"dateOfBirth\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"emailVerified\": {",
+									"          \"type\": \"boolean\"",
+									"        },",
+									"        \"signUpDate\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"status\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"level\": {",
+									"          \"type\": \"string\"",
+									"        }",
+									"      },",
+									"      \"required\": [",
+									"        \"id\",",
+									"        \"firstName\",",
+									"        \"lastName\",",
+									"        \"email\",",
+									"        \"dateOfBirth\",",
+									"        \"emailVerified\",",
+									"        \"signUpDate\",",
+									"        \"status\",",
+									"        \"level\"",
+									"      ]",
+									"    },",
+									"    {",
+									"      \"type\": \"object\",",
+									"      \"properties\": {",
+									"        \"id\": {",
+									"          \"type\": \"integer\"",
+									"        },",
+									"        \"firstName\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"lastName\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"email\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"dateOfBirth\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"emailVerified\": {",
+									"          \"type\": \"boolean\"",
+									"        },",
+									"        \"signUpDate\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"status\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"level\": {",
+									"          \"type\": \"string\"",
+									"        }",
+									"      },",
+									"      \"required\": [",
+									"        \"id\",",
+									"        \"firstName\",",
+									"        \"lastName\",",
+									"        \"email\",",
+									"        \"dateOfBirth\",",
+									"        \"emailVerified\",",
+									"        \"signUpDate\",",
+									"        \"status\",",
+									"        \"level\"",
+									"      ]",
+									"    },",
+									"    {",
+									"      \"type\": \"object\",",
+									"      \"properties\": {",
+									"        \"id\": {",
+									"          \"type\": \"integer\"",
+									"        },",
+									"        \"firstName\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"lastName\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"email\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"dateOfBirth\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"emailVerified\": {",
+									"          \"type\": \"boolean\"",
+									"        },",
+									"        \"signUpDate\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"status\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"level\": {",
+									"          \"type\": \"string\"",
+									"        }",
+									"      },",
+									"      \"required\": [",
+									"        \"id\",",
+									"        \"firstName\",",
+									"        \"lastName\",",
+									"        \"email\",",
+									"        \"dateOfBirth\",",
+									"        \"emailVerified\",",
+									"        \"signUpDate\",",
+									"        \"status\",",
+									"        \"level\"",
+									"      ]",
+									"    },",
+									"    {",
+									"      \"type\": \"object\",",
+									"      \"properties\": {",
+									"        \"id\": {",
+									"          \"type\": \"integer\"",
+									"        },",
+									"        \"firstName\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"lastName\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"email\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"dateOfBirth\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"emailVerified\": {",
+									"          \"type\": \"boolean\"",
+									"        },",
+									"        \"signUpDate\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"status\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"level\": {",
+									"          \"type\": \"string\"",
+									"        }",
+									"      },",
+									"      \"required\": [",
+									"        \"id\",",
+									"        \"firstName\",",
+									"        \"lastName\",",
+									"        \"email\",",
+									"        \"dateOfBirth\",",
+									"        \"emailVerified\",",
+									"        \"signUpDate\",",
+									"        \"status\",",
+									"        \"level\"",
+									"      ]",
+									"    },",
+									"    {",
+									"      \"type\": \"object\",",
+									"      \"properties\": {",
+									"        \"id\": {",
+									"          \"type\": \"integer\"",
+									"        },",
+									"        \"firstName\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"lastName\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"email\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"dateOfBirth\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"emailVerified\": {",
+									"          \"type\": \"boolean\"",
+									"        },",
+									"        \"signUpDate\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"status\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"level\": {",
+									"          \"type\": \"string\"",
+									"        }",
+									"      },",
+									"      \"required\": [",
+									"        \"id\",",
+									"        \"firstName\",",
+									"        \"lastName\",",
+									"        \"email\",",
+									"        \"dateOfBirth\",",
+									"        \"emailVerified\",",
+									"        \"signUpDate\",",
+									"        \"status\",",
+									"        \"level\"",
+									"      ]",
+									"    },",
+									"    {",
+									"      \"type\": \"object\",",
+									"      \"properties\": {",
+									"        \"id\": {",
+									"          \"type\": \"integer\"",
+									"        },",
+									"        \"firstName\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"lastName\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"email\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"dateOfBirth\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"emailVerified\": {",
+									"          \"type\": \"boolean\"",
+									"        },",
+									"        \"signUpDate\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"status\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"level\": {",
+									"          \"type\": \"string\"",
+									"        }",
+									"      },",
+									"      \"required\": [",
+									"        \"id\",",
+									"        \"firstName\",",
+									"        \"lastName\",",
+									"        \"email\",",
+									"        \"dateOfBirth\",",
+									"        \"emailVerified\",",
+									"        \"signUpDate\",",
+									"        \"status\",",
+									"        \"level\"",
+									"      ]",
+									"    },",
+									"    {",
+									"      \"type\": \"object\",",
+									"      \"properties\": {",
+									"        \"id\": {",
+									"          \"type\": \"integer\"",
+									"        },",
+									"        \"firstName\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"lastName\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"email\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"dateOfBirth\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"emailVerified\": {",
+									"          \"type\": \"boolean\"",
+									"        },",
+									"        \"signUpDate\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"status\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"level\": {",
+									"          \"type\": \"string\"",
+									"        }",
+									"      },",
+									"      \"required\": [",
+									"        \"id\",",
+									"        \"firstName\",",
+									"        \"lastName\",",
+									"        \"email\",",
+									"        \"dateOfBirth\",",
+									"        \"emailVerified\",",
+									"        \"signUpDate\",",
+									"        \"status\",",
+									"        \"level\"",
+									"      ]",
+									"    },",
+									"    {",
+									"      \"type\": \"object\",",
+									"      \"properties\": {",
+									"        \"id\": {",
+									"          \"type\": \"integer\"",
+									"        },",
+									"        \"firstName\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"lastName\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"email\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"dateOfBirth\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"emailVerified\": {",
+									"          \"type\": \"boolean\"",
+									"        },",
+									"        \"signUpDate\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"status\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"level\": {",
+									"          \"type\": \"string\"",
+									"        }",
+									"      },",
+									"      \"required\": [",
+									"        \"id\",",
+									"        \"firstName\",",
+									"        \"lastName\",",
+									"        \"email\",",
+									"        \"dateOfBirth\",",
+									"        \"emailVerified\",",
+									"        \"signUpDate\",",
+									"        \"status\",",
+									"        \"level\"",
+									"      ]",
+									"    },",
+									"    {",
+									"      \"type\": \"object\",",
+									"      \"properties\": {",
+									"        \"id\": {",
+									"          \"type\": \"integer\"",
+									"        },",
+									"        \"firstName\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"lastName\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"email\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"dateOfBirth\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"emailVerified\": {",
+									"          \"type\": \"boolean\"",
+									"        },",
+									"        \"signUpDate\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"status\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"level\": {",
+									"          \"type\": \"string\"",
+									"        }",
+									"      },",
+									"      \"required\": [",
+									"        \"id\",",
+									"        \"firstName\",",
+									"        \"lastName\",",
+									"        \"email\",",
+									"        \"dateOfBirth\",",
+									"        \"emailVerified\",",
+									"        \"signUpDate\",",
+									"        \"status\",",
+									"        \"level\"",
+									"      ]",
+									"    },",
+									"    {",
+									"      \"type\": \"object\",",
+									"      \"properties\": {",
+									"        \"firstName\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"lastName\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"email\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"dateOfBirth\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"emailVerified\": {",
+									"          \"type\": \"boolean\"",
+									"        },",
+									"        \"signUpDate\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"status\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"level\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"id\": {",
+									"          \"type\": \"integer\"",
+									"        }",
+									"      },",
+									"      \"required\": [",
+									"        \"firstName\",",
+									"        \"lastName\",",
+									"        \"email\",",
+									"        \"dateOfBirth\",",
+									"        \"emailVerified\",",
+									"        \"signUpDate\",",
+									"        \"status\",",
+									"        \"level\",",
+									"        \"id\"",
+									"      ]",
+									"    },",
+									"    {",
+									"      \"type\": \"object\",",
+									"      \"properties\": {",
+									"        \"firstName\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"lastName\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"email\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"dateOfBirth\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"emailVerified\": {",
+									"          \"type\": \"boolean\"",
+									"        },",
+									"        \"signUpDate\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"status\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"level\": {",
+									"          \"type\": \"string\"",
+									"        },",
+									"        \"id\": {",
+									"          \"type\": \"integer\"",
+									"        }",
+									"      },",
+									"      \"required\": [",
+									"        \"firstName\",",
+									"        \"lastName\",",
+									"        \"email\",",
+									"        \"dateOfBirth\",",
+									"        \"emailVerified\",",
+									"        \"signUpDate\",",
+									"        \"status\",",
+									"        \"level\",",
+									"        \"id\"",
+									"      ]",
+									"    }",
+									"  ]",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users?page={{page}}&pageSize={{pageSize}}",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "{{page}}"
+								},
+								{
+									"key": "pageSize",
+									"value": "{{pageSize}}"
+								},
+								{
+									"key": "sortOrder",
+									"value": "ASC",
+									"disabled": true
+								},
+								{
+									"key": "sortKey",
+									"value": "lastName",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"pm.globals.set(\"newNameUsers\", response.firstName);",
+									"",
+									"pm.test(\"Status code is 404\", () => {",
+									"  pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"firstName\": \"Sam\",\r\n    \"lastName\": \"Smith\",\r\n    \"email\": \"{{userEmail}}\",\r\n    \"dateOfBirth\": \"2001-10-99\",\r\n    \"emailVerified\": true,\r\n    \"signUpDate\": \"2019-08-24\",\r\n    \"status\": \"active\",\r\n    \"level\": \"lord\",\r\n    \"id\": \"{{userId}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get user by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();",
+									"",
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Status code is 404\", () => {",
+									"    pm.response.to.have.status(404);",
+									"});",
+									"",
+									"pm.test(\"Ckecking that name was updated\", () => {",
+									"    pm.expect(response.firstName).not.to.be.eql(globals.oldNameUsers)",
+									"    pm.expect(response.firstName).to.be.eql(globals.newNameUsers)",
+									"})",
+									"",
+									"pm.test(\"Ckecking that name was not updated\", () => {",
+									"    pm.expect(response.name).to.be.eql(globals.oldNameUsers)",
+									"    pm.expect(response.name).not.to.be.eql(globals.newNameUsers)",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove user by ID",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", () => {",
+									"  pm.response.to.have.status(200);",
+									"});",
+									"",
+									"pm.test(\"Status code is 404\", () => {",
+									"  pm.response.to.have.status(404);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/users/:userId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								":userId"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "{{userId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"pm.globals.set(\"page\", 1);",
+					"pm.globals.set(\"pageSize\", 6);",
+					"pm.globals.set(\"invalidId\", \"five\");",
+					"",
+					"pm.test(\"Response time is less than 200ms\", () => {",
+					"    pm.expect(pm.response.responseTime).to.be.below(200);",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3000",
+			"type": "string"
+		}
+	]
+}
